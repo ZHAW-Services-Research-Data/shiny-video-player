@@ -22,3 +22,9 @@ reverse_item <- function(v, max_value) {
 
 
 
+
+seek_and_play <- function(videoInputID, t, autoplay=TRUE) {
+  seekVideo(videoInputID, t)
+  if (autoplay)
+    playVideo(videoInputID, t)
+}
