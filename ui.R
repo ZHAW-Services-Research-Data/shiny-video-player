@@ -6,183 +6,128 @@ ui <- fluidPage(
            img(src = "zhaw_cmyk.jpg", height = 100, width = 100)
     ),
     column(3,
-           checkboxInput("dark_mode", "Dark mode"),
+           br(),
+           materialSwitch(
+             inputId = "dark_mode",
+             label = "Dark mode",
+             value = FALSE,
+             status = "primary"
+           ),
+           # alternative to materialSwitch
+           # checkboxInput("dark_mode", "Dark mode"),
     )
   ),
   
   # Application title
-  titlePanel("Just Another Shiny Template - Demo"),
+  titlePanel("Video player"),
   
   # Sidebar: put Input Elements here
   sidebarLayout(
     sidebarPanel( 
-      helpText(
-        "Note: to use the REDCap dataset",
-        "you must provide redcap_url and redcap_api_token",
-        "as environment variables."
+      selectizeInput("tid", "Trial Id", choices=NULL),
+      materialSwitch(
+        inputId = "autoplay",
+        label = "Autoplay", 
+        value = TRUE,
+        status = "primary"
       ),
-      radioButtons(
-        inputId = "datasource",
-        label = h5("Choose Dataset"),
-        choices = list(
-          "Use stored dataset" = "csv",
-          "Get happiness data from REDCap" = "redcap"
-        ),
-        selected = "csv"
-      ),
-      textInput(
-        inputId = "selected_Id",
-        label = h5("Provide Key of record"),
-        placeholder = "key"
-      )
-      
+      # alternative to materialSwitch
+      # checkboxInput("autoplay", "Autoplay", value = TRUE),
+      width = 2, #sidebarPanel width: 2 out of 12 columns
     ),
     
-    # Panel to show all your outputs inside
-    # Each of the *Output functions require a single argument: 
-    # a character string that Shiny will use as the name of your reactive element. 
-    # Your users will not see this name.
-    # It is the name that connects output element in the UI and the
-    # object that you want to display and that is calculated in the server.R
-    # Possible outputs are:
-    # dataTableOutput: DataTable
-    # htmlOutput:	raw HTML
-    # imageOutput:	image
-    # plotOutput:	plot
-    # tableOutpu:t	table
-    # textOutput:	text
-    # uiOutput:	raw HTML
-    # verbatimTextOutput:	text
+    # Video panel
     mainPanel(
       tabsetPanel(
-        tabPanel("Dashboard",
-                 textOutput("dashboard_title"),
-                 br(),
-                 h3("Data Table"),
-                 tableOutput("the_data"),
-                 # br(),
-                 # h3("Overview Plot"),
-                 # plotOutput("plot_alldata"),
-                 br(),
-                 h3("Compare yourself to others"),
-                 textOutput("text_id_selected"),
-                 plotOutput("plot_id")
+        tabPanel("Player",
+                 fluidRow(
+                   tags$h2("Camera 1"),
+                   column(WIDTH_PANEL_COLUMN,
+                          inputPanel(
+                            actionButton("cam1_phase0", NAME_PHASE0, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam1_phase1", NAME_PHASE1, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam1_phase2", NAME_PHASE2, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam1_phase3", NAME_PHASE3, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam1_phase4", NAME_PHASE4, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam1_phase5", NAME_PHASE5, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                          ),
+                   ),
+                   column(WIDTH_VIDEO_COLUMN,
+                          textOutput("t1"),
+                          video(elementId = "video1", 
+                                files=c(DEFAULT_VIDEO1),
+                                format = c(VIDEO_FORMAT),
+                                width=WIDTH_VIDEO,
+                          ),
+                   ),
+                 ),
+                 fluidRow(
+                   tags$h2("Camera 2"),
+                   column(WIDTH_PANEL_COLUMN,
+                          inputPanel(
+                            actionButton("cam2_phase0", NAME_PHASE0, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam2_phase1", NAME_PHASE1, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam2_phase2", NAME_PHASE2, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam2_phase3", NAME_PHASE3, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam2_phase4", NAME_PHASE4, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam2_phase5", NAME_PHASE5, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                          ),
+                   ),
+                   column(WIDTH_VIDEO_COLUMN,
+                          textOutput("t2"),
+                          video(elementId = "video2", 
+                                files=c(DEFAULT_VIDEO2),
+                                format = c(VIDEO_FORMAT),
+                                width=WIDTH_VIDEO,
+                          ),
+                   ),
+                 ),
+                 fluidRow(
+                   tags$h2("Camera 3"),
+                   column(WIDTH_PANEL_COLUMN,
+                          inputPanel(
+                            actionButton("cam3_phase0", NAME_PHASE0, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam3_phase1", NAME_PHASE1, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam3_phase2", NAME_PHASE2, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam3_phase3", NAME_PHASE3, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam3_phase4", NAME_PHASE4, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                            br(),
+                            actionButton("cam3_phase5", NAME_PHASE5, width=ACTION_BUTTON_WIDTH, class=ACTION_BUTTON_CLASS),
+                          ),
+                   ),
+                   column(WIDTH_VIDEO_COLUMN,
+                          textOutput("t3"),
+                          video(elementId = "video3", 
+                                files=c(DEFAULT_VIDEO3),
+                                format = c(VIDEO_FORMAT),
+                                width=WIDTH_VIDEO,
+                          ),
+                   )
+                 ) # last row
         ),
-        tabPanel("All input widgets",
-                 # demonstration of all available standard widgets
-                 # demonstration here: https://shiny.rstudio.com/gallery/widget-gallery.html
-                 
-                 h2("All available standard widgets"),
-                 
+        tabPanel("Table",
                  fluidRow(
-                   column(
-                     3,
-                     h4("Buttons"),
-                     actionButton("action", "Action"),
-                     br(),
-                     br(),
-                     #submitButton(text = "Submit") # currently, switch to dark mode does not work when submitButton present
-                   ),
-                   
-                   column(
-                     3,
-                     h4("Single checkbox"),
-                     checkboxInput("checkbox", "Choice A", value = TRUE)
-                   ),
-                   
-                   column(
-                     3,
-                     checkboxGroupInput(
-                       "checkGroup",
-                       h4("Checkbox group"),
-                       choices = list(
-                         "Choice 1" = 1,
-                         "Choice 2" = 2,
-                         "Choice 3" = 3
-                       ),
-                       selected = 1
-                     )
-                   ),
-                   
-                   column(3,
-                          dateInput("date",
-                                    h4("Date input"),
-                                    value = "2014-01-01"))
+                   h2("Video Timestamp List"),
                  ),
-                 
                  fluidRow(
-                   column(3,
-                          dateRangeInput("dates", h4("Date range"))),
-                   
-                   column(3,
-                          fileInput("file", h4("File input"))),
-                   
-                   column(
-                     3,
-                     h4("Help text"),
-                     helpText(
-                       "Note: help text isn't a true widget,",
-                       "but it provides an easy way to add text to",
-                       "accompany other widgets."
-                     )
-                   ),
-                   
-                   column(3,
-                          numericInput("num",
-                                       h4("Numeric input"),
-                                       value = 1))
+                   tableOutput("video_list"),
                  ),
-                 
-                 fluidRow(
-                   column(3,
-                          radioButtons(
-                            "radio",
-                            h4("Radio buttons"),
-                            choices = list(
-                              "Choice 1" = 1,
-                              "Choice 2" = 2,
-                              "Choice 3" = 3
-                            ),
-                            selected = 1
-                          )),
-                   
-                   column(3,
-                          selectInput(
-                            "select",
-                            h4("Select box"),
-                            choices = list(
-                              "Choice 1" = 1,
-                              "Choice 2" = 2,
-                              "Choice 3" = 3
-                            ),
-                            selected = 1
-                          )),
-                   
-                   column(
-                     3,
-                     sliderInput(
-                       "slider1",
-                       h4("Sliders"),
-                       min = 0,
-                       max = 100,
-                       value = 50
-                     ),
-                     sliderInput(
-                       "slider2",
-                       "",
-                       min = 0,
-                       max = 100,
-                       value = c(25, 75)
-                     )
-                   ),
-                   
-                   column(3,
-                          textInput("text", h4("Text input"),
-                                    value = "Enter text..."))
-                 )
         )
       )
     )
-    
   )
 )

@@ -13,7 +13,7 @@ server <- function(input, output, session) {
   observe(session$setCurrentTheme(
     if (isTRUE(input$dark_mode)) dark else light
   ))
-
+  
   # PROCESS INPUTS & DEFINE REACTIVE OBJECTS --------------------------------
   
   # REACTIVE EXPRESSIONS
@@ -38,58 +38,114 @@ server <- function(input, output, session) {
   url_id <- reactive({
     id <- get_id(session)
     if (id == 0) {
-      return(77681)
+      return("trial1001")
     }
   })
   
-  the_id <- reactive({
-   if (input$selected_Id != "")
-    input$selected_Id
-   else
-     url_id()
+  
+  addResourcePath(prefix = "videos", directoryPath = "videos")
+  tids <- unique(df_videos$trial_number)
+  
+  updateSelectizeInput(session, 'tid', choices = tids, server = TRUE)
+  
+  selected_tid <- reactive({
+    if (input$tid != "")
+      input$tid
+    else
+      url_id()
   })
   
-  # 
-  # load dynamic datasets when a user is accessing the shiny app:
-  # if csv/shiny_server is selected, read file from rs connected, otherwise use REDCap
-  read_data <- reactive({
-   if(input$datasource == "csv") {
-     read_data_csv()
-   }
-    else {
-      read_data_redcap()
-    }
-  })
-    
-  the_data <- reactive(
-    read_data() %>% 
-      add_id_to_df() %>%
-      clean_columns() %>%
-      reverse_items_in_df(BFI_REVERSED_ITEMS, BFI_MAX_VALUE))
   
-  filtered_data <- reactive(get_data_for_id(the_data(), the_id()))
+  name_video1 <- reactive(create_video_source(selected_tid(), "cam3"))
+  observe({changeVideo("video1", files=name_video1(), format = VIDEO_FORMAT)})
   
-  filtered_standardized_data <- reactive(filtered_data() %>%
-      standardize_bfi(df_bfi_scales, df_bfi_norms))
+  name_video2 <- reactive(create_video_source(selected_tid(), "cam2")) 
+  observe({changeVideo("video2", files=name_video2(), format = VIDEO_FORMAT)})
   
+  name_video3 <- reactive(create_video_source(selected_tid(), "cam3")) 
+  observe({changeVideo("video3", files=name_video3(), format = VIDEO_FORMAT)})
   
-  # DEFINE THE OUTPUTS ------------------------------------------------------
-
-  # How to define outputs
-  # * the names of the elements of output need to be the same as the names specified in the ui output-elements
-  # * each entry to output should contain the output of one of Shiny’s render* functions.
-  # render functions: the code inside is executed each time when a user changes a widget (input) that is used inside of the render-function
-  # * renderDataTable	creates DataTable
-  # * renderImage	creates images (saved as a link to a source file)
-  # * renderPlot	creates plots
-  # * renderPrint	creates any printed output
-  # * renderTable	creates data frame, matrix, other table like structures
-  # * renderText	creates character strings
-  # * renderUI	  creates a Shiny tag object or HTML
+  output$video_list <- renderTable(df_videos)
   
-  output$dashboard_title <- renderText(paste0("Report for User ID: ", the_id(), " - Number of data points: ", length(the_data()$record_id), " - data used from: ", input$datasource))
-  output$text_id_selected <- renderText(ifelse(the_id() == 0, "no user id selected, showing all ansers", ""))
-  output$the_data <- renderTable(filtered_data())
-  # output$plot_alldata <- renderPlot(create_overview_plot(the_data()))
-  output$plot_id <- renderPlot(create_standardized_vertical_plot(filtered_standardized_data()))
+  # ***************** VIDEO 1 **************************
+  output$t1 <- renderText(name_video1())
+  
+  observeEvent(input$cam1_phase0,
+               seek_and_play("video1", 0, input$autoplay))
+  
+  observeEvent(input$cam1_phase1, 
+               seek_and_play("video1",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam1", "phase1"),
+                             input$autoplay))
+  observeEvent(input$cam1_phase2, 
+               seek_and_play("video1",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam1", "phase2"),
+                             input$autoplay))
+  observeEvent(input$cam1_phase3, 
+               seek_and_play("video1",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam1", "phase3"),
+                             input$autoplay))
+  observeEvent(input$cam1_phase4, 
+               seek_and_play("video1",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam1", "phase4"),
+                             input$autoplay))
+  observeEvent(input$cam1_phase5, 
+               seek_and_play("video1",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam1", "phase5"),
+                             input$autoplay))
+  
+  # ***************** VIDEO 3 **************************
+  output$t2 <- renderText(name_video2())
+  
+  observeEvent(input$cam2_phase0,
+               seek_and_play("video2", 0, input$autoplay))
+  
+  observeEvent(input$cam2_phase1, 
+               seek_and_play("video2",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam2", "phase1"),
+                             input$autoplay))
+  observeEvent(input$cam2_phase2, 
+               seek_and_play("video2",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam2", "phase2"),
+                             input$autoplay))
+  observeEvent(input$cam2_phase3, 
+               seek_and_play("video2",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam2", "phase3"),
+                             input$autoplay))
+  observeEvent(input$cam2_phase4, 
+               seek_and_play("video2",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam2", "phase4"),
+                             input$autoplay))
+  observeEvent(input$cam2_phase5, 
+               seek_and_play("video2",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam2", "phase5"),
+                             input$autoplay))
+  
+ 
+  # ***************** VIDEO 3 **************************
+  output$t3 <- renderText(name_video3())
+  
+  observeEvent(input$cam3_phase0,
+               seek_and_play("video3", 0, input$autoplay))
+  
+  observeEvent(input$cam3_phase1, 
+               seek_and_play("video3",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam3", "phase1"),
+                             input$autoplay))
+  observeEvent(input$cam3_phase2, 
+               seek_and_play("video3",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam3", "phase2"),
+                             input$autoplay))
+  observeEvent(input$cam3_phase3, 
+               seek_and_play("video3",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam3", "phase3"),
+                             input$autoplay))
+  observeEvent(input$cam3_phase4, 
+               seek_and_play("video3",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam3", "phase4"),
+                             input$autoplay))
+  observeEvent(input$cam3_phase5, 
+               seek_and_play("video3",
+                             get_timing_for_phase(df_videos, selected_tid(), "cam3", "phase5"),
+                             input$autoplay))
 }
